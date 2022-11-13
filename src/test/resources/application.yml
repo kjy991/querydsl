@@ -1,6 +1,7 @@
+
 spring:
   profiles:
-    active: local
+    active: test
   datasource:
     url: jdbc:mysql://localhost:3306/datajpa?autoReconnect=true&useUnicode=true&characterEncoding=utf-8 # 본인의 db connection url
     username: root # 본인의 db username
