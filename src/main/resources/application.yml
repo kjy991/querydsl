@@ -11,7 +11,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
 #      ddl-auto: update # // ******** 배포시 무조건 none ******** application 실행시 db에 ddl 생성 및 삭제 옵션
-      ddl-auto: create # // ******** 배포시 무조건 none ******** application 실행시 db에 ddl 생성 및 삭제 옵션
+      ddl-auto: create-drop # // ******** 배포시 무조건 none ******** application 실행시 db에 ddl 생성 및 삭제 옵션
       default_batch_fetch_size: 500
 
     properties:
