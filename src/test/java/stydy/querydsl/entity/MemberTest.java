@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import stydy.querydsl.dto.MemberDto;
@@ -444,16 +445,16 @@ class MemberTest {
         }
     }
 
-    @Test
-    public void findDtoByJpql() throws Exception {
-        List<MemberDto> resultList = em.createQuery(
-                        "select new study.querydsl.dto.MemberDto(m.username, m.age) " +
-                                "from Member m", MemberDto.class)
-                .getResultList();
-        for (MemberDto memberDto : resultList) {
-            System.out.println("memberDto = " + memberDto);
-        }
-    }
+//    @Test
+//    public void findDtoByJpql() throws Exception {
+//        List<MemberDto> resultList = em.createQuery(
+//                        "select new study.querydsl.dto.MemberDto(m.username, m.age) " +
+//                                "from Member m", MemberDto.class)
+//                .getResultList();
+//        for (MemberDto memberDto : resultList) {
+//            System.out.println("memberDto = " + memberDto);
+//        }
+//    }
 
     @Test
     public void findDtoBySetter() {
@@ -589,6 +590,70 @@ class MemberTest {
 
     private BooleanExpression allEq(String usernameCond, Integer ageCond) {
         return usernameEq(usernameCond).and(ageEq(ageCond));
+    }
+
+    @Test
+    public void bulkUpdate() throws Exception {
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+        em.flush();
+        em.clear();
+
+        List<Member> fetch = queryFactory.selectFrom(member).fetch();
+        for (Member fetch1 : fetch) {
+            System.out.println("fetch1 = " + fetch1);
+        }
+    }
+
+    @Test
+    public void bulkAdd() throws Exception {
+        long execute = queryFactory
+                .update(member)
+                .set(member.age, member.age.add(1))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> fetch = queryFactory.selectFrom(member).fetch();
+        for (Member fetch1 : fetch) {
+            System.out.println("fetch1 = " + fetch1);
+        }
+    }
+
+    @Test
+    public void bulkDelete() {
+        long execute = queryFactory
+                .delete(member)
+                .where(member.age.gt(19))
+                .execute();
+    }
+
+    @Test
+    public void sqlFunction() {
+        List<String> fetch = queryFactory
+                .select(Expressions.stringTemplate(
+                        "function('replace', {0}, {1}, {2})",
+                        member.username, "member", "M"))
+                .from(member)
+                .fetch();
+    }
+
+    @Test
+    public void sqlFunction2() throws Exception {
+        List<String> fetch = queryFactory
+                .select(member.username)
+                .from(member)
+                .where(
+//                        member.username.eq(Expressions.stringTemplate("function('lower',{0} )", member.username)))
+                        member.username.eq(member.username.lower()))
+                .fetch();
+        for (String s : fetch) {
+            System.out.println("s = " + s);
+        }
     }
 
 
