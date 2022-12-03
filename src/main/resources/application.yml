@@ -1,8 +1,8 @@
 spring:
-  profiles:
-    active: local
+#  profiles:
+#    active: local
   datasource:
-    url: jdbc:mysql://localhost:3306/datajpa?autoReconnect=true&useUnicode=true&characterEncoding=utf-8 # 본인의 db connection url
+    url: jdbc:mysql://localhost:3306/data_jpa?autoReconnect=true&useUnicode=true&characterEncoding=utf-8 # 본인의 db connection url
     username: root # 본인의 db username
     password: 910314008 # 본인의 db password
     driver-class-name: com.mysql.cj.jdbc.Driver
